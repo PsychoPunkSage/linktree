@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arch Background Variants</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0d1117; color:#e2e8f0; font-family:'JetBrains Mono','Fira Code','Courier New',monospace; }
+
+.page-title { text-align:center; padding:24px 0 8px; color:#22c55e; font-size:13px; letter-spacing:0.1em; }
+.page-sub   { text-align:center; color:#374151; font-size:11px; margin-bottom:24px; }
+
+.variants { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; padding:0 20px 32px; max-width:1100px; margin:0 auto; }
+
+.variant { border:1px solid rgba(34,197,94,0.15); border-radius:8px; overflow:hidden; cursor:pointer; transition:border-color 0.2s,box-shadow 0.2s; }
+.variant:hover, .variant.selected { border-color:rgba(34,197,94,0.6); box-shadow:0 0 20px rgba(34,197,94,0.1); }
+.variant.selected { border-color:#22c55e; }
+
+.variant-label { padding:10px 14px; background:rgba(22,27,34,0.9); border-top:1px solid rgba(34,197,94,0.1); font-size:11px; color:#6b7280; }
+.variant-label strong { color:#22c55e; display:block; margin-bottom:2px; font-size:12px; }
+
+/* shared terminal chrome */
+.term {
+  position:relative; overflow:hidden; height:280px;
+  background:#0d1117;
+}
+.titlebar {
+  position:relative; z-index:10;
+  background:rgba(13,17,23,0.9); border-bottom:1px solid rgba(34,197,94,0.1);
+  padding:8px 12px; display:flex; align-items:center; gap:6px;
+}
+.dot { width:8px; height:8px; border-radius:50%; }
+.dot-r{background:#ff5f57;}.dot-y{background:#febc2e;}.dot-g{background:#28c840;}
+.ttitle { color:#374151; font-size:10px; margin-left:6px; }
+
+.term-content {
+  position:relative; z-index:10;
+  padding:12px 14px; font-size:11px; line-height:1.7;
+}
+
+/* arch neofetch layout */
+.neofetch { display:flex; gap:14px; }
+.arch-logo { color:#22c55e; font-size:9.5px; line-height:1.4; white-space:pre; flex-shrink:0; text-shadow:0 0 8px rgba(34,197,94,0.4); }
+.nf-info { flex:1; }
+.nf-title { color:#4ade80; font-size:12px; margin-bottom:6px; }
+.nf-row { display:flex; gap:8px; margin:1px 0; }
+.nf-k { color:#22c55e; min-width:64px; font-size:10px; }
+.nf-v { color:#d1d5db; font-size:10px; }
+.nf-comment { color:#374151; font-size:10px; }
+
+.prompt-row { display:flex; gap:6px; align-items:baseline; margin-top:10px; font-size:11px; }
+.p-bracket { color:#4b5563; }
+.p-user { color:#22c55e; }
+.p-at    { color:#6b7280; }
+.p-host  { color:#4ade80; }
+.p-path  { color:#60a5fa; }
+.p-sym   { color:#e2e8f0; }
+.p-cmd   { color:#fbbf24; }
+.cursor  { display:inline-block; width:7px; height:12px; background:#22c55e; vertical-align:middle; animation:blink 1.1s step-end infinite; box-shadow:0 0 5px rgba(34,197,94,0.7); }
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* grid overlay shared */
+.grid-layer {
+  position:absolute; inset:0; z-index:1; pointer-events:none;
+  background-image:linear-gradient(rgba(0,255,65,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,65,0.035) 1px,transparent 1px);
+  background-size:28px 28px;
+}
+</style>
+</head>
+<body>
+
+<div class="page-title">DYNAMIC BACKGROUND OPTIONS — ARCH AESTHETIC</div>
+<div class="page-sub">Same terminal UI — different background animations. Click one to select.</div>
+
+<div class="variants">
+
+  <!-- VARIANT A: Matrix Rain -->
+  <div class="variant" onclick="selectVariant(this,'a')" id="v-a">
+    <div class="term">
+      <canvas id="ca" style="position:absolute;inset:0;z-index:2;opacity:0.35;"></canvas>
+      <div class="grid-layer"></div>
+      <div style="position:absolute;inset:0;z-index:3;background:radial-gradient(ellipse at 50% 0%,rgba(34,197,94,0.07) 0%,transparent 60%);"></div>
+      <div class="titlebar" style="position:relative;z-index:10;">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <span class="ttitle">visitor@psychopunksage: ~</span>
+      </div>
+      <div class="term-content" style="position:relative;z-index:10;">
+        <div class="neofetch">
+          <div class="arch-logo">      /\
+     /  \
+    /\   \
+   /  __  \
+  / /    \ \
+ / /      \ \
+/__/  Arch  \__\</div>
+          <div class="nf-info">
+            <div class="nf-title">visitor@psychopunksage</div>
+            <div style="border-top:1px solid rgba(34,197,94,0.15);margin-bottom:6px;"></div>
+            <div class="nf-row"><span class="nf-k">OS</span><span class="nf-v">Arch Linux x86_64</span></div>
+            <div class="nf-row"><span class="nf-k">Shell</span><span class="nf-v">zsh 5.9</span></div>
+            <div class="nf-row"><span class="nf-k">Role</span><span class="nf-v">Systems Engineer</span></div>
+            <div class="nf-row"><span class="nf-k">Focus</span><span class="nf-v">Kernel · Drivers · C</span></div>
+          </div>
+        </div>
+        <div class="prompt-row">
+          <span class="p-bracket">[</span><span class="p-user">visitor</span><span class="p-at">@</span><span class="p-host">psychopunksage</span> <span class="p-path">~</span><span class="p-bracket">]</span><span class="p-sym">$</span>
+          <span class="p-cmd">ask</span> <span style="color:#86efac;">"who are you?"</span> <span class="cursor"></span>
+        </div>
+      </div>
+    </div>
+    <div class="variant-label"><strong>A — Matrix Rain</strong>Falling katakana/binary chars. Classic hacker aesthetic. Green on dark.</div>
+  </div>
+
+  <!-- VARIANT B: Network Graph -->
+  <div class="variant" onclick="selectVariant(this,'b')" id="v-b">
+    <div class="term">
+      <canvas id="cb" style="position:absolute;inset:0;z-index:2;opacity:0.5;"></canvas>
+      <div class="grid-layer"></div>
+      <div style="position:absolute;inset:0;z-index:3;background:radial-gradient(ellipse at 50% 100%,rgba(34,197,94,0.06) 0%,transparent 65%);"></div>
+      <div class="titlebar" style="position:relative;z-index:10;">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <span class="ttitle">visitor@psychopunksage: ~</span>
+      </div>
+      <div class="term-content" style="position:relative;z-index:10;">
+        <div class="neofetch">
+          <div class="arch-logo">      /\
+     /  \
+    /\   \
+   /  __  \
+  / /    \ \
+ / /      \ \
+/__/  Arch  \__\</div>
+          <div class="nf-info">
+            <div class="nf-title">visitor@psychopunksage</div>
+            <div style="border-top:1px solid rgba(34,197,94,0.15);margin-bottom:6px;"></div>
+            <div class="nf-row"><span class="nf-k">OS</span><span class="nf-v">Arch Linux x86_64</span></div>
+            <div class="nf-row"><span class="nf-k">Shell</span><span class="nf-v">zsh 5.9</span></div>
+            <div class="nf-row"><span class="nf-k">Role</span><span class="nf-v">Systems Engineer</span></div>
+            <div class="nf-row"><span class="nf-k">Focus</span><span class="nf-v">Kernel · Drivers · C</span></div>
+          </div>
+        </div>
+        <div class="prompt-row">
+          <span class="p-bracket">[</span><span class="p-user">visitor</span><span class="p-at">@</span><span class="p-host">psychopunksage</span> <span class="p-path">~</span><span class="p-bracket">]</span><span class="p-sym">$</span>
+          <span class="p-cmd">ask</span> <span style="color:#86efac;">"who are you?"</span> <span class="cursor"></span>
+        </div>
+      </div>
+    </div>
+    <div class="variant-label"><strong>B — Network Graph / Nodes</strong>Interconnected nodes + edges. Like a kernel module dependency graph. Subtle, techy.</div>
+  </div>
+
+  <!-- VARIANT C: Hex Stream -->
+  <div class="variant" onclick="selectVariant(this,'c')" id="v-c">
+    <div class="term">
+      <canvas id="cc" style="position:absolute;inset:0;z-index:2;opacity:0.3;"></canvas>
+      <div class="grid-layer"></div>
+      <div style="position:absolute;inset:0;z-index:3;background:radial-gradient(ellipse at 30% 50%,rgba(34,197,94,0.06) 0%,transparent 55%),radial-gradient(ellipse at 70% 50%,rgba(34,197,94,0.04) 0%,transparent 55%);"></div>
+      <div class="titlebar" style="position:relative;z-index:10;">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <span class="ttitle">visitor@psychopunksage: ~</span>
+      </div>
+      <div class="term-content" style="position:relative;z-index:10;">
+        <div class="neofetch">
+          <div class="arch-logo">      /\
+     /  \
+    /\   \
+   /  __  \
+  / /    \ \
+ / /      \ \
+/__/  Arch  \__\</div>
+          <div class="nf-info">
+            <div class="nf-title">visitor@psychopunksage</div>
+            <div style="border-top:1px solid rgba(34,197,94,0.15);margin-bottom:6px;"></div>
+            <div class="nf-row"><span class="nf-k">OS</span><span class="nf-v">Arch Linux x86_64</span></div>
+            <div class="nf-row"><span class="nf-k">Shell</span><span class="nf-v">zsh 5.9</span></div>
+            <div class="nf-row"><span class="nf-k">Role</span><span class="nf-v">Systems Engineer</span></div>
+            <div class="nf-row"><span class="nf-k">Focus</span><span class="nf-v">Kernel · Drivers · C</span></div>
+          </div>
+        </div>
+        <div class="prompt-row">
+          <span class="p-bracket">[</span><span class="p-user">visitor</span><span class="p-at">@</span><span class="p-host">psychopunksage</span> <span class="p-path">~</span><span class="p-bracket">]</span><span class="p-sym">$</span>
+          <span class="p-cmd">ask</span> <span style="color:#86efac;">"who are you?"</span> <span class="cursor"></span>
+        </div>
+      </div>
+    </div>
+    <div class="variant-label"><strong>C — Hex Dump Stream</strong>Scrolling hex/binary data columns. Like reading /dev/mem. Very low-level, very you.</div>
+  </div>
+
+</div>
+
+<script>
+// ── VARIANT A: Matrix Rain ──────────────────────────────────────────────
+(function(){
+  const c = document.getElementById('ca');
+  const t = c.parentElement;
+  c.width = t.offsetWidth; c.height = t.offsetHeight;
+  const ctx = c.getContext('2d');
+  const cols = Math.floor(c.width / 12);
+  const drops = Array(cols).fill(1).map(()=>Math.floor(Math.random()*c.height/14));
+  const chars = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉ01アイウエオ'.split('');
+  function draw(){
+    ctx.fillStyle='rgba(13,17,23,0.07)';
+    ctx.fillRect(0,0,c.width,c.height);
+    ctx.font='12px monospace';
+    drops.forEach((y,i)=>{
+      const ch = chars[Math.floor(Math.random()*chars.length)];
+      ctx.fillStyle = Math.random()>0.96 ? '#fff' : '#22c55e';
+      ctx.fillText(ch, i*12, y*14);
+      if(y*14>c.height && Math.random()>0.97) drops[i]=0;
+      drops[i]++;
+    });
+  }
+  setInterval(draw,45);
+})();
+
+// ── VARIANT B: Network Graph ────────────────────────────────────────────
+(function(){
+  const c = document.getElementById('cb');
+  const t = c.parentElement;
+  c.width = t.offsetWidth; c.height = t.offsetHeight;
+  const ctx = c.getContext('2d');
+  const N = 22;
+  const nodes = Array.from({length:N},()=>({
+    x:Math.random()*c.width, y:Math.random()*c.height,
+    vx:(Math.random()-0.5)*0.4, vy:(Math.random()-0.5)*0.4,
+    r:1.5+Math.random()*2
+  }));
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    // edges
+    for(let i=0;i<N;i++) for(let j=i+1;j<N;j++){
+      const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<90){
+        ctx.beginPath();
+        ctx.moveTo(nodes[i].x,nodes[i].y);
+        ctx.lineTo(nodes[j].x,nodes[j].y);
+        ctx.strokeStyle=`rgba(34,197,94,${0.5*(1-dist/90)})`;
+        ctx.lineWidth=0.7;
+        ctx.stroke();
+      }
+    }
+    // nodes
+    nodes.forEach(n=>{
+      ctx.beginPath();
+      ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(34,197,94,0.7)';
+      ctx.fill();
+      // move
+      n.x+=n.vx; n.y+=n.vy;
+      if(n.x<0||n.x>c.width) n.vx*=-1;
+      if(n.y<0||n.y>c.height) n.vy*=-1;
+    });
+  }
+  setInterval(draw,30);
+})();
+
+// ── VARIANT C: Hex Stream ───────────────────────────────────────────────
+(function(){
+  const c = document.getElementById('cc');
+  const t = c.parentElement;
+  c.width = t.offsetWidth; c.height = t.offsetHeight;
+  const ctx = c.getContext('2d');
+  const colW=28, rowH=14;
+  const cols=Math.floor(c.width/colW);
+  const rows=Math.floor(c.height/rowH);
+  let grid = Array.from({length:cols},()=>Array.from({length:rows},()=>({
+    val:Math.floor(Math.random()*256).toString(16).padStart(2,'0').toUpperCase(),
+    age:Math.floor(Math.random()*60)
+  })));
+  function draw(){
+    ctx.fillStyle='rgba(13,17,23,0.15)';
+    ctx.fillRect(0,0,c.width,c.height);
+    ctx.font='10px monospace';
+    grid.forEach((col,ci)=>{
+      col.forEach((cell,ri)=>{
+        cell.age++;
+        if(cell.age>40+Math.floor(Math.random()*40)){
+          cell.val=Math.floor(Math.random()*256).toString(16).padStart(2,'0').toUpperCase();
+          cell.age=0;
+        }
+        const alpha = 0.12 + (cell.age<5 ? 0.5 : 0);
+        ctx.fillStyle=`rgba(34,197,94,${alpha})`;
+        ctx.fillText(cell.val, ci*colW+2, ri*rowH+10);
+      });
+    });
+  }
+  setInterval(draw,80);
+})();
+
+// ── Selection ───────────────────────────────────────────────────────────
+function selectVariant(el, choice){
+  document.querySelectorAll('.variant').forEach(v=>v.classList.remove('selected'));
+  el.classList.add('selected');
+  if(window.recordSelection) window.recordSelection(choice, el.querySelector('.variant-label strong').textContent);
+}
+</script>
+</body>
+</html>
