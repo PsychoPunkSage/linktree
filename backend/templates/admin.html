@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>admin — psychopunksage.dev</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0d1117; color: #e2e8f0;
+           font-family: 'JetBrains Mono', monospace; font-size: 12px;
+           padding: 24px; max-width: 960px; margin: 0 auto; }
+    h1 { color: #22c55e; font-size: 14px; margin-bottom: 24px; }
+    h2 { color: #86efac; font-size: 12px; margin: 20px 0 8px;
+         border-bottom: 1px solid rgba(34,197,94,0.15); padding-bottom: 4px; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 8px; }
+    .card { background: rgba(34,197,94,0.04); border: 1px solid rgba(34,197,94,0.12);
+            border-radius: 6px; padding: 12px 16px; }
+    .card .label { color: #6b7280; font-size: 10px; margin-bottom: 4px; }
+    .card .value { color: #22c55e; font-size: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+    th { color: #6b7280; font-size: 10px; text-align: left;
+         padding: 4px 8px; border-bottom: 1px solid rgba(34,197,94,0.1); }
+    td { padding: 6px 8px; border-bottom: 1px solid rgba(34,197,94,0.05);
+         color: #d1d5db; vertical-align: top; }
+    .tag { display: inline-block; padding: 1px 6px; border-radius: 3px;
+           font-size: 10px; background: rgba(34,197,94,0.08);
+           color: #86efac; }
+    .dim { color: #6b7280; }
+  </style>
+</head>
+<body>
+<h1>$ admin — psychopunksage.dev</h1>
+
+<h2>Today</h2>
+<div class="grid">
+  <div class="card"><div class="label">visitors</div><div class="value">{{ stats.visitors }}</div></div>
+  <div class="card"><div class="label">questions</div><div class="value">{{ stats.questions }}</div></div>
+  <div class="card"><div class="label">flagged</div><div class="value">{{ stats.flagged }}</div></div>
+</div>
+
+<h2>AI Usage (today)</h2>
+<table>
+  <tr><th>model</th><th>calls</th><th>avg ms</th></tr>
+  {% for m in stats.models %}
+  <tr>
+    <td>{{ m.model_used }}</td>
+    <td>{{ m.cnt }}</td>
+    <td>{{ m.avg_ms | int }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<h2>Traffic Sources (7d)</h2>
+<table>
+  <tr><th>source</th><th>visits</th></tr>
+  {% for r in referrers %}
+  <tr><td>{{ r.referrer or 'direct' }}</td><td>{{ r.count }}</td></tr>
+  {% endfor %}
+</table>
+
+<h2>Top Questions (7d)</h2>
+<table>
+  <tr><th>question</th><th>count</th></tr>
+  {% for q in top_questions %}
+  <tr><td>{{ q.question }}</td><td>{{ q.count }}</td></tr>
+  {% endfor %}
+</table>
+
+<h2>Recent Sessions</h2>
+<table>
+  <tr><th>session</th><th>location</th><th>source</th><th>type</th><th>questions</th><th>notes</th></tr>
+  {% for s in sessions %}
+  <tr>
+    <td class="dim">{{ s.id[:8] }}</td>
+    <td>{{ s.city or '' }}{% if s.country %}, {{ s.country }}{% endif %}</td>
+    <td>{{ s.referrer or 'direct' }}</td>
+    <td>
+      {% if s.inferred_type %}
+        <span class="tag">{{ s.inferred_type }}</span>
+        {% if s.confidence %}<span class="dim"> {{ "%.2f"|format(s.confidence) }}</span>{% endif %}
+      {% endif %}
+    </td>
+    <td>{{ s.question_count }}</td>
+    <td class="dim">{{ s.inference_notes or '' }}</td>
+  </tr>
+  {% endfor %}
+</table>
+</body>
+</html>
