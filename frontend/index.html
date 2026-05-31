@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>psychopunksage.dev</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js"></script>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div class="grid-overlay"></div>
+<div class="top-glow"></div>
+<div class="bottom-glow"></div>
+
+<div class="shell">
+  <div class="window" x-data="versionPanel()">
+
+    <div class="titlebar">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <span class="titlebar-text">psychopunksage.dev — bash 5.2.0</span>
+      <button class="version-btn" @click="toggle()" aria-label="Version history">i</button>
+      <div class="version-popup" :class="{ open: show }">
+        <div class="vp-cmd">$ cat CHANGELOG.md</div>
+        <template x-for="entry in entries" :key="entry.version">
+          <div class="vp-row">
+            <span class="vp-ver" x-text="entry.version"></span>
+            <span class="vp-date" x-text="entry.date"></span>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <div class="terminal-body" x-data="chatApp()">
+
+      <div class="prompt-line">
+        <span class="ps1-user">visitor</span><span class="ps1-at">@</span><span class="ps1-host">psychopunksage</span><span class="ps1-sym">:</span><span class="ps1-path">~</span><span class="ps1-sym">$</span>
+        <span class="cmd">whoami</span>
+      </div>
+      <div class="output">
+        <div class="kv"><span class="k">name</span>   <span class="v">"Abhinav Prakash"</span></div>
+        <div class="kv"><span class="k">role</span>   <span class="v">"Systems Engineer"</span>  <span class="cm">// kernel, drivers, low-level C</span></div>
+        <div class="kv"><span class="k">env</span>    <span class="v">"terminal-only"</span>     <span class="cm">// no GUI, no mercy</span></div>
+        <div class="kv"><span class="k">domain</span> <span class="v">"psychopunksage.dev"</span></div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="hint">// ask me anything — I'll answer as Abhinav</div>
+
+      <div class="messages">
+        <template x-for="(msg, i) in messages" :key="i">
+          <div class="msg" :class="msg.role === 'user' ? 'msg-user' : (msg.error ? 'msg-error' : 'msg-ai')"
+               x-html="msg.content"></div>
+        </template>
+        <div class="msg msg-ai loading" x-show="loading"></div>
+      </div>
+
+      <div class="chat-area">
+        <span class="chat-arrow">→</span>
+        <input
+          class="chat-input"
+          x-model="input"
+          @keydown.enter="send()"
+          placeholder="what are you working on right now?"
+          :disabled="loading"
+          autocomplete="off"
+          spellcheck="false"
+        >
+        <span class="cursor-blink" x-show="!input && !loading"></span>
+      </div>
+
+      <div class="links">
+        <a class="lnk" href="https://github.com/psychopunksage" target="_blank" rel="noopener">[ github ]</a>
+        <a class="lnk" href="/resume.pdf" target="_blank">[ resume.pdf ]</a>
+        <a class="lnk" href="https://linkedin.com/in/psychopunksage" target="_blank" rel="noopener">[ linkedin ]</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="network.js"></script>
+<script src="chat.js"></script>
+</body>
+</html>
