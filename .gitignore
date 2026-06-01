@@ -1,1 +1,3 @@
 __pycache__/
+.env
+backend/data/context/detail/*.md
