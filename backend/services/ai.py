@@ -25,7 +25,7 @@ _key_state = {"gemini": 0, "groq": 0}
 
 def _stream_gemini(prompt: str, key: str) -> Generator[str, None, None]:
     genai.configure(api_key=key)
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel("gemini-2.0-flash")
     response = model.generate_content(prompt, stream=True)
     for chunk in response:
         if chunk.text:
@@ -34,7 +34,7 @@ def _stream_gemini(prompt: str, key: str) -> Generator[str, None, None]:
 def _stream_groq(prompt: str, key: str) -> Generator[str, None, None]:
     client = Groq(api_key=key)
     stream = client.chat.completions.create(
-        model="llama3-8b-8192",
+        model="llama-3.1-8b-instant",
         messages=[{"role": "user", "content": prompt}],
         stream=True,
     )
@@ -60,15 +60,24 @@ def _try_keys(prompt: str, stream_fn, keys: list[str], state_key: str) -> Genera
                 continue
             raise
 
-def stream_response(prompt: str) -> Generator[str, None, None]:
+def _parse_keys(raw: str) -> list[str]:
+    return [k.strip() for k in raw.split(",") if k.strip()]
+
+def stream_response(prompt: str, fallback_prompt: str | None = None) -> Generator[str, None, None]:
+    """Stream a response from available AI backends.
+
+    prompt: full prompt sent to Gemini (may be large — Gemini handles 1M tokens).
+    fallback_prompt: smaller prompt for Groq if Gemini fails. Uses prompt when None.
+    """
     try:
-        yield from _try_keys(prompt, _stream_gemini, settings.gemini_api_keys, "gemini")
+        yield from _try_keys(prompt, _stream_gemini, _parse_keys(settings.gemini_api_keys), "gemini")
         return
     except Exception:
         pass
 
+    groq_prompt = fallback_prompt if fallback_prompt is not None else prompt
     try:
-        yield from _try_keys(prompt, _stream_groq, settings.groq_api_keys, "groq")
+        yield from _try_keys(groq_prompt, _stream_groq, _parse_keys(settings.groq_api_keys), "groq")
         return
     except Exception:
         pass
