@@ -47,7 +47,9 @@ def _parse_profile(text: str) -> dict:
     return result
 
 async def run_profiler(session_id: str):
-    if not settings.gemini_api_key:
+    from services.ai import _parse_keys
+    keys = _parse_keys(settings.gemini_api_keys)
+    if not keys:
         return
 
     with get_conn() as conn:
@@ -68,8 +70,8 @@ async def run_profiler(session_id: str):
     ua_hint = _ua_hint(session["user_agent"] or "")
 
     try:
-        genai.configure(api_key=settings.gemini_api_key)
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        genai.configure(api_key=keys[0])
+        model = genai.GenerativeModel("gemini-2.0-flash")
         response = model.generate_content(
             PROFILER_PROMPT.format(
                 questions=questions, referrer=referrer, ua_hint=ua_hint
