@@ -23,6 +23,7 @@
   const CONNECT_DIST = 130;
 
   function draw() {
+    requestAnimationFrame(draw);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     for (let i = 0; i < N; i++) {
@@ -44,15 +45,16 @@
 
     nodes.forEach(n => {
       n.pulse += 0.018;
-      const pr = n.r + (n.important ? Math.sin(n.pulse) * 1.5 : 0);
+      const pr = Math.max(0.5, n.r + (n.important ? Math.sin(n.pulse) * 1.5 : 0));
       const alpha = n.important ? 0.7 + Math.sin(n.pulse) * 0.2 : 0.45;
 
       if (n.important) {
-        const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, pr * 5);
+        const glowR = Math.max(1, pr * 5);
+        const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, glowR);
         grd.addColorStop(0, 'rgba(34,197,94,0.15)');
         grd.addColorStop(1, 'rgba(34,197,94,0)');
         ctx.beginPath();
-        ctx.arc(n.x, n.y, pr * 5, 0, Math.PI * 2);
+        ctx.arc(n.x, n.y, glowR, 0, Math.PI * 2);
         ctx.fillStyle = grd;
         ctx.fill();
       }
@@ -69,8 +71,6 @@
       if (n.y < -20) n.y = canvas.height + 20;
       if (n.y > canvas.height + 20) n.y = -20;
     });
-
-    requestAnimationFrame(draw);
   }
   draw();
 })();
