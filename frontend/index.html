@@ -36,46 +36,56 @@
 
     <div class="terminal-body" x-data="chatApp()">
 
-      <div class="prompt-line">
-        <span class="ps1-user">visitor</span><span class="ps1-at">@</span><span class="ps1-host">psychopunksage</span><span class="ps1-sym">:</span><span class="ps1-path">~</span><span class="ps1-sym">$</span>
-        <span class="cmd">whoami</span>
-      </div>
-      <div class="output">
-        <div class="kv"><span class="k">name</span>   <span class="v">"Abhinav Prakash"</span></div>
-        <div class="kv"><span class="k">role</span>   <span class="v">"Systems Engineer"</span>  <span class="cm">// kernel, drivers, low-level C</span></div>
-        <div class="kv"><span class="k">env</span>    <span class="v">"terminal-only"</span>     <span class="cm">// no GUI, no mercy</span></div>
-        <div class="kv"><span class="k">domain</span> <span class="v">"psychopunksage.dev"</span></div>
+      <div class="terminal-static">
+        <div class="prompt-line">
+          <span class="ps1-user">visitor</span><span class="ps1-at">@</span><span class="ps1-host">psychopunksage</span><span class="ps1-sym">:</span><span class="ps1-path">~</span><span class="ps1-sym">$</span>
+          <span class="cmd">whoami</span>
+        </div>
+        <div class="output">
+          <div class="kv"><span class="k">name</span>   <span class="v">"Abhinav Prakash"</span></div>
+          <div class="kv"><span class="k">role</span>   <span class="v">"Systems Engineer"</span>  <span class="cm">// kernel, drivers, low-level C</span></div>
+          <div class="kv"><span class="k">env</span>    <span class="v">"terminal-only"</span>     <span class="cm">// no GUI, no mercy</span></div>
+          <div class="kv"><span class="k">domain</span> <span class="v">"psychopunksage.dev"</span></div>
+        </div>
+        <div class="divider"></div>
+        <div class="hint">// ask me anything — I'll answer as Abhinav</div>
       </div>
 
-      <div class="divider"></div>
-      <div class="hint">// ask me anything — I'll answer as Abhinav</div>
-
-      <div class="messages">
+      <div class="messages" x-ref="messages">
         <template x-for="(msg, i) in messages" :key="i">
           <div class="msg" :class="msg.role === 'user' ? 'msg-user' : (msg.error ? 'msg-error' : 'msg-ai')"
                x-html="msg.content"></div>
         </template>
-        <div class="msg msg-ai loading" x-show="loading"></div>
+        <div class="msg msg-ai msg-loading" x-show="loading">...</div>
       </div>
 
-      <div class="chat-area">
-        <span class="chat-arrow">→</span>
-        <input
-          class="chat-input"
-          x-model="input"
-          @keydown.enter="send()"
-          placeholder="what are you working on right now?"
-          :disabled="loading"
-          autocomplete="off"
-          spellcheck="false"
-        >
-        <span class="cursor-blink" x-show="!input && !loading"></span>
-      </div>
+      <div class="terminal-footer">
+        <div class="chat-area" @click="$refs.chatInput.focus()">
+          <span class="chat-arrow">→</span>
+          <div class="chat-input-wrap">
+            <span class="chat-mirror" x-text="input"></span>
+            <span class="cursor-blink" x-show="!loading"></span>
+            <span class="chat-placeholder" x-show="!input && !loading">what are you working on right now?</span>
+            <input
+              class="chat-input"
+              x-ref="chatInput"
+              x-model="input"
+              @keydown.enter="send()"
+              @keydown.up.prevent="historyUp()"
+              @keydown.down.prevent="historyDown()"
+              :disabled="loading"
+              autocomplete="off"
+              spellcheck="false"
+              autofocus
+            >
+          </div>
+        </div>
 
-      <div class="links">
-        <a class="lnk" href="https://github.com/psychopunksage" target="_blank" rel="noopener">[ github ]</a>
-        <a class="lnk" href="/resume.pdf" target="_blank">[ resume.pdf ]</a>
-        <a class="lnk" href="https://linkedin.com/in/psychopunksage" target="_blank" rel="noopener">[ linkedin ]</a>
+        <div class="links">
+          <a class="lnk" href="https://github.com/psychopunksage" target="_blank" rel="noopener">[ github ]</a>
+          <a class="lnk" href="/resume.pdf" target="_blank">[ resume.pdf ]</a>
+          <a class="lnk" href="https://linkedin.com/in/psychopunksage" target="_blank" rel="noopener">[ linkedin ]</a>
+        </div>
       </div>
 
     </div>
