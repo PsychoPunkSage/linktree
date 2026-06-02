@@ -16,12 +16,14 @@ Reply with only the single word: PASS, SOFT, or HARD."""
 
 def _ai_classify(question: str) -> str:
     from config import settings
-    if not settings.gemini_api_key:
+    from services.ai import _parse_keys
+    keys = _parse_keys(settings.gemini_api_keys)
+    if not keys:
         return "PASS"
     try:
         import google.generativeai as genai
-        genai.configure(api_key=settings.gemini_api_key)
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        genai.configure(api_key=keys[0])
+        model = genai.GenerativeModel("gemini-2.0-flash")
         response = model.generate_content(FILTER_PROMPT.format(question=question))
         text = response.text.strip().upper()
         return text if text in {"PASS", "SOFT", "HARD"} else "PASS"
