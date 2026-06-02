@@ -26,12 +26,15 @@ function versionPanel() {
 }
 
 function chatApp() {
-  const API = 'https://api.psychopunksage.dev';
+  // const API = 'https://api.psychopunksage.dev';
+  const API = 'http://localhost:8000';
 
   return {
     input: '',
     messages: [],
     loading: false,
+    history: [],
+    historyIdx: -1,
     sessionId: (() => {
       const k = 'pps_sid';
       let id = sessionStorage.getItem(k);
@@ -39,10 +42,24 @@ function chatApp() {
       return id;
     })(),
 
+    historyUp() {
+      if (!this.history.length) return;
+      this.historyIdx = Math.min(this.historyIdx + 1, this.history.length - 1);
+      this.input = this.history[this.historyIdx];
+    },
+
+    historyDown() {
+      if (this.historyIdx <= 0) { this.historyIdx = -1; this.input = ''; return; }
+      this.historyIdx--;
+      this.input = this.history[this.historyIdx];
+    },
+
     async send() {
       const q = this.input.trim();
       if (!q || this.loading) return;
 
+      this.history.unshift(q);
+      this.historyIdx = -1;
       this.messages.push({ role: 'user', content: q });
       this.input = '';
       this.loading = true;
@@ -80,8 +97,8 @@ function chatApp() {
       } finally {
         this.loading = false;
         this.$nextTick(() => {
-          const el = document.querySelector('.messages');
-          if (el) el.scrollTop = el.scrollHeight;
+          if (this.$refs.messages) this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight;
+          this.$refs.chatInput.focus();
         });
       }
     },
