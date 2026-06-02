@@ -25,10 +25,3 @@ If it can be done in C, it should be done in C. The terminal is the only IDE I n
 
 Open source collaboration on kernel/driver work. Interesting systems engineering
 challenges. Not interested in frontend roles or web development positions.
-
-## Quick map (full details in detail/ files)
-
-- Skills: C, Rust, Python, shell — see skills.md
-- Experience: systems engineering work — see experience.md
-- Projects: kernel modules, driver development — see projects.md
-- Setup: Arch Linux, neovim, terminal workflow — see setup.md
