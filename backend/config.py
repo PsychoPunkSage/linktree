@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     github_username: str = "psychopunksage"
     allowed_origin: str = "https://psychopunksage.dev"
     context_encryption_key: str = ""
+    modal_endpoint: str = ""
+    modal_enabled:  bool = True
 
     class Config:
         env_file = ".env"

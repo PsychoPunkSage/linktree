@@ -4,6 +4,8 @@ from fastapi import APIRouter, Request, BackgroundTasks
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from services.ai import stream_response
+from services.slm import stream_from_slm
+from config import settings
 from services.context import build_context
 from services.filter import classify
 from services.ratelimit import check_and_increment
@@ -90,18 +92,39 @@ async def chat(req: ChatRequest, request: Request, bg: BackgroundTasks):
             yield "data: [DONE]\n\n"
             return
 
-        gemini_ctx, groq_ctx = build_context(req.question)
-        github        = get_cached_summary()
-        prompt        = SYSTEM_PROMPT.format(context=gemini_ctx, github=github) + f"\n\nQuestion: {req.question}"
-        fallback      = SYSTEM_PROMPT.format(context=groq_ctx,   github=github) + f"\n\nQuestion: {req.question}"
-        fallback_arg  = fallback if groq_ctx != gemini_ctx else None
+        slm_active = getattr(settings, "modal_enabled", False) and getattr(settings, "modal_endpoint", "")
 
-        for token in stream_response(prompt, fallback_prompt=fallback_arg):
-            full_response += token
-            model_used = "gemini"
-            yield _sse(token)
-
-        yield "data: [DONE]\n\n"
+        if slm_active:
+            try:
+                async for token in stream_from_slm(req.question):
+                    full_response += token
+                    model_used = "slm"
+                    yield _sse(token)
+                yield "data: [DONE]\n\n"
+            except Exception:
+                full_response = ""
+                model_used = "static"
+                gemini_ctx, groq_ctx = build_context(req.question)
+                github       = get_cached_summary()
+                prompt       = SYSTEM_PROMPT.format(context=gemini_ctx, github=github) + f"\n\nQuestion: {req.question}"
+                fallback     = SYSTEM_PROMPT.format(context=groq_ctx,   github=github) + f"\n\nQuestion: {req.question}"
+                fallback_arg = fallback if groq_ctx != gemini_ctx else None
+                for token in stream_response(prompt, fallback_prompt=fallback_arg):
+                    full_response += token
+                    model_used = "gemini"
+                    yield _sse(token)
+                yield "data: [DONE]\n\n"
+        else:
+            gemini_ctx, groq_ctx = build_context(req.question)
+            github       = get_cached_summary()
+            prompt       = SYSTEM_PROMPT.format(context=gemini_ctx, github=github) + f"\n\nQuestion: {req.question}"
+            fallback     = SYSTEM_PROMPT.format(context=groq_ctx,   github=github) + f"\n\nQuestion: {req.question}"
+            fallback_arg = fallback if groq_ctx != gemini_ctx else None
+            for token in stream_response(prompt, fallback_prompt=fallback_arg):
+                full_response += token
+                model_used = "gemini"
+                yield _sse(token)
+            yield "data: [DONE]\n\n"
 
         elapsed = int((time.monotonic() - start) * 1000)
         insert_chat_log(log_id, req.session_id, req.question, full_response,
