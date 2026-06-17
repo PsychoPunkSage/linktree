@@ -99,7 +99,8 @@ async def chat(req: ChatRequest, request: Request, bg: BackgroundTasks):
 
         if slm_active:
             try:
-                async for token in stream_from_slm(req.question):
+                _, slm_ctx = build_context(req.question)
+                async for token in stream_from_slm(req.question, context=slm_ctx):
                     full_response += token
                     model_used = "slm"
                     yield _sse(token)

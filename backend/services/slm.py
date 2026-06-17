@@ -8,7 +8,7 @@ except ImportError:
     settings = None
 
 
-async def stream_from_slm(question: str) -> AsyncGenerator[str, None]:
+async def stream_from_slm(question: str, context: str = "") -> AsyncGenerator[str, None]:
     if not settings or not settings.modal_endpoint:
         raise RuntimeError("MODAL_ENDPOINT not configured")
 
@@ -16,7 +16,7 @@ async def stream_from_slm(question: str) -> AsyncGenerator[str, None]:
         async with client.stream(
             "POST",
             settings.modal_endpoint,
-            json={"question": question},
+            json={"question": question, "context": context},
             headers={"Accept": "text/event-stream"},
         ) as response:
             response.raise_for_status()
