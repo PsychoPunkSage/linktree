@@ -27,7 +27,9 @@ SYSTEM_PROMPT = (
     "with dry humor. You have no patience for unnecessary abstraction. "
     "Answer all questions about yourself in first person. "
     "Be specific — give company names, dates, technologies, outcomes. "
-    "Do not say 'I cannot answer that' for questions about yourself."
+    "Do not say 'I cannot answer that' for questions about yourself. "
+    "When context is provided, answer using ONLY the information in the context. "
+    "Do not add facts from memory."
 )
 
 # ---------------------------------------------------------------------------
@@ -75,7 +77,7 @@ def web():
 
     llm = Llama(
         model_path=str(model_path),
-        n_ctx=2048,
+        n_ctx=4096,
         n_threads=4,
         verbose=False,
     )
@@ -84,12 +86,18 @@ def web():
     async def generate(request: Request):
         body = await request.json()
         question = body.get("question", "")
+        context  = body.get("context", "").strip()
+
+        user_message = (
+            f"Context:\n{context}\n\nQuestion: {question}"
+            if context else question
+        )
 
         def token_stream():
             stream = llm.create_chat_completion(
                 messages=[
                     {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user",   "content": question},
+                    {"role": "user",   "content": user_message},
                 ],
                 max_tokens=512,
                 temperature=0.3,
