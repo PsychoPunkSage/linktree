@@ -71,7 +71,7 @@ async def run_profiler(session_id: str):
 
     try:
         genai.configure(api_key=keys[0])
-        model = genai.GenerativeModel("gemini-2.0-flash")
+        model = genai.GenerativeModel(settings.gemini_model)
         response = model.generate_content(
             PROFILER_PROMPT.format(
                 questions=questions, referrer=referrer, ua_hint=ua_hint

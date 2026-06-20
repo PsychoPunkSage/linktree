@@ -12,7 +12,7 @@ async def stream_from_slm(question: str, context: str = "") -> AsyncGenerator[st
     if not settings or not settings.modal_endpoint:
         raise RuntimeError("MODAL_ENDPOINT not configured")
 
-    async with httpx.AsyncClient(timeout=90) as client:
+    async with httpx.AsyncClient(timeout=settings.slm_timeout) as client:
         async with client.stream(
             "POST",
             settings.modal_endpoint,

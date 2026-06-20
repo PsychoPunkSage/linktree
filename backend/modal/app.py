@@ -12,25 +12,14 @@ from pathlib import Path
 import modal
 
 # ---------------------------------------------------------------------------
-# Config — change these if the model repo or filename ever changes
+# Config — all values read from environment (set via Modal secrets or .env)
 # ---------------------------------------------------------------------------
 
-HF_REPO_ID   = "psychopunksage/portfolio-slm"
-HF_FILENAME  = "abhinav-portfolio.Q4_K_M.gguf"   # configurable: swap for any GGUF in the repo
-MODEL_DIR    = Path("/model")
+HF_REPO_ID  = os.environ.get("HF_REPO_ID", "")
+HF_FILENAME = os.environ.get("HF_FILENAME", "")
+MODEL_DIR   = Path(os.environ.get("MODEL_DIR", "/model"))
 
-SYSTEM_PROMPT = (
-    "You are Abhinav Prakash (handle: psychopunksage). "
-    "You are a systems engineer focused on blockchain infrastructure, "
-    "low-level systems programming, and Linux kernel development. "
-    "You write Rust, Go, Solidity, and C. You are direct, technically precise, "
-    "with dry humor. You have no patience for unnecessary abstraction. "
-    "Answer all questions about yourself in first person. "
-    "Be specific — give company names, dates, technologies, outcomes. "
-    "Do not say 'I cannot answer that' for questions about yourself. "
-    "When context is provided, answer using ONLY the information in the context. "
-    "Do not add facts from memory."
-)
+SYSTEM_PROMPT = os.environ.get("SLM_SYSTEM_PROMPT", "")
 
 # ---------------------------------------------------------------------------
 # Modal image — what gets installed inside the cloud container
@@ -45,7 +34,7 @@ app = modal.App("abhinav-portfolio-slm", image=image)
 
 # Persistent volume: the 1.93GB GGUF is downloaded once and cached here.
 # Subsequent cold starts skip the download entirely.
-model_volume = modal.Volume.from_name("portfolio-model-cache", create_if_missing=True)
+model_volume = modal.Volume.from_name(os.environ.get("MODAL_VOLUME_NAME", ""), create_if_missing=True)
 
 # ---------------------------------------------------------------------------
 # ASGI app — gives us full control over the response pipeline (no buffering)
@@ -53,8 +42,8 @@ model_volume = modal.Volume.from_name("portfolio-model-cache", create_if_missing
 
 @app.function(
     volumes={str(MODEL_DIR): model_volume},
-    memory=4096,   # 1.93GB model + llama.cpp overhead — 4GB is safe headroom
-    timeout=120,
+    memory=int(os.environ.get("MODAL_MEMORY", "4096")),
+    timeout=int(os.environ.get("MODAL_TIMEOUT", "120")),
 )
 @modal.asgi_app()
 def web():
@@ -77,8 +66,8 @@ def web():
 
     llm = Llama(
         model_path=str(model_path),
-        n_ctx=4096,
-        n_threads=4,
+        n_ctx=int(os.environ.get("LLM_N_CTX", "4096")),
+        n_threads=int(os.environ.get("LLM_N_THREADS", "4")),
         verbose=False,
     )
 
@@ -99,8 +88,8 @@ def web():
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user",   "content": user_message},
                 ],
-                max_tokens=512,
-                temperature=0.3,
+                max_tokens=int(os.environ.get("LLM_MAX_TOKENS", "512")),
+                temperature=float(os.environ.get("LLM_TEMPERATURE", "0.3")),
                 stream=True,
             )
             for chunk in stream:

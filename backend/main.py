@@ -9,6 +9,13 @@ from db import init_db
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    missing = [k for k, v in {
+        "ADMIN_SECRET":   settings.admin_secret,
+        "ALLOWED_ORIGIN": settings.allowed_origin,
+        "GITHUB_USERNAME": settings.github_username,
+    }.items() if not v]
+    if missing:
+        raise RuntimeError(f"Required env vars not set: {', '.join(missing)}")
     init_db()
     init_context()
     await start_github_cache()

@@ -25,7 +25,7 @@ _key_state = {"gemini": 0, "groq": 0}
 
 def _stream_gemini(prompt: str, key: str) -> Generator[str, None, None]:
     genai.configure(api_key=key)
-    model = genai.GenerativeModel("gemini-2.0-flash")
+    model = genai.GenerativeModel(settings.gemini_model)
     response = model.generate_content(prompt, stream=True)
     for chunk in response:
         if chunk.text:
@@ -34,7 +34,7 @@ def _stream_gemini(prompt: str, key: str) -> Generator[str, None, None]:
 def _stream_groq(prompt: str, key: str) -> Generator[str, None, None]:
     client = Groq(api_key=key)
     stream = client.chat.completions.create(
-        model="llama-3.1-8b-instant",
+        model=settings.groq_model,
         messages=[{"role": "user", "content": prompt}],
         stream=True,
     )
