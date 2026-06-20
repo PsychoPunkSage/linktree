@@ -26,8 +26,7 @@ function versionPanel() {
 }
 
 function chatApp() {
-  const API = 'https://api.psychopunksage.dev';
-  // const API = 'http://localhost:8000';
+  const API = (window._ENV && window._ENV.API) || '';
 
   return {
     input: '',
