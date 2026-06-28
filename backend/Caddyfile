@@ -1,10 +1,10 @@
-api.psychopunksage.dev {
+api.{$DOMAIN} {
     reverse_proxy 127.0.0.1:8000
     header {
         X-Accel-Buffering no
     }
 }
 
-analytics.psychopunksage.dev {
+analytics.{$DOMAIN} {
     reverse_proxy 127.0.0.1:3000
 }
