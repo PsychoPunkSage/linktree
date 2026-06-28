@@ -1,5 +1,9 @@
 __pycache__/
 .env
+backend/data/context/core.md
 backend/data/context/detail/*.md
+backend/data/github_cache.json
+backend/data/vectordb/
 backend/data/portfolio.db
+training/qa_dataset*.jsonl
 frontend/env.js
