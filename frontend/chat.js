@@ -1,3 +1,7 @@
+document.addEventListener('alpine:init', () => {
+  Alpine.store('id', window._ENV || {});
+});
+
 function versionPanel() {
   return {
     show: false,

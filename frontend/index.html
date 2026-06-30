@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>psychopunksage.dev</title>
+  <title>portfolio</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <link rel="stylesheet" href="style.css">
+  <script src="env.js"></script>
+  <script>document.title = (window._ENV||{}).OWNER_DOMAIN || document.title;</script>
   <script defer src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js"></script>
 </head>
 <body>
@@ -25,7 +27,7 @@
       <div class="dot dot-r"></div>
       <div class="dot dot-y"></div>
       <div class="dot dot-g"></div>
-      <span class="titlebar-text">psychopunksage.dev — bash 5.2.0</span>
+      <span class="titlebar-text" x-text="($store.id.OWNER_DOMAIN || 'portfolio') + ' — bash 5.2.0'"></span>
       <button class="version-btn" @click="toggle()" aria-label="Version history">i</button>
       <div class="version-popup" :class="{ open: show }">
         <div class="vp-cmd">$ cat CHANGELOG.md</div>
@@ -42,17 +44,17 @@
 
       <div class="terminal-static">
         <div class="prompt-line">
-          <span class="ps1-user">visitor</span><span class="ps1-at">@</span><span class="ps1-host">psychopunksage</span><span class="ps1-sym">:</span><span class="ps1-path">~</span><span class="ps1-sym">$</span>
+          <span class="ps1-user">visitor</span><span class="ps1-at">@</span><span class="ps1-host" x-text="$store.id.OWNER_HANDLE || 'handle'"></span><span class="ps1-sym">:</span><span class="ps1-path">~</span><span class="ps1-sym">$</span>
           <span class="cmd">whoami</span>
         </div>
         <div class="output">
-          <div class="kv"><span class="k">name</span>   <span class="v">"Abhinav Prakash"</span></div>
-          <div class="kv"><span class="k">role</span>   <span class="v">"Systems Engineer"</span>  <span class="cm">// kernel, drivers, low-level C</span></div>
-          <div class="kv"><span class="k">env</span>    <span class="v">"terminal-only"</span>     <span class="cm">// no GUI, no mercy</span></div>
-          <div class="kv"><span class="k">domain</span> <span class="v">"psychopunksage.dev"</span></div>
+          <div class="kv"><span class="k">name</span>   <span class="v" x-text="'&quot;' + ($store.id.OWNER_NAME || 'Your Name') + '&quot;'"></span></div>
+          <div class="kv"><span class="k">role</span>   <span class="v" x-text="'&quot;' + ($store.id.OWNER_ROLE || 'Engineer') + '&quot;'"></span>  <span class="cm" x-text="'// ' + ($store.id.OWNER_SPECIALTY || '')"></span></div>
+          <div class="kv"><span class="k">env</span>    <span class="v" x-text="'&quot;' + ($store.id.OWNER_ENV || 'terminal-only') + '&quot;'"></span>     <span class="cm" x-text="'// ' + ($store.id.OWNER_ENV_COMMENT || '')"></span></div>
+          <div class="kv"><span class="k">domain</span> <span class="v" x-text="'&quot;' + ($store.id.OWNER_DOMAIN || 'yourdomain.dev') + '&quot;'"></span></div>
         </div>
         <div class="divider"></div>
-        <div class="hint">// ask me anything — I'll answer as Abhinav</div>
+        <div class="hint" x-text="'// ' + ($store.id.CHAT_HINT || 'ask me anything')"></div>
       </div>
 
       <div class="messages" x-ref="messages">
@@ -69,7 +71,7 @@
           <div class="chat-input-wrap">
             <span class="chat-mirror" x-text="input"></span>
             <span class="cursor-blink" x-show="!loading"></span>
-            <span class="chat-placeholder" x-show="!input && !loading">what are you working on right now?</span>
+            <span class="chat-placeholder" x-show="!input && !loading" x-text="$store.id.CHAT_PLACEHOLDER || 'ask me anything'"></span>
             <input
               class="chat-input"
               x-ref="chatInput"
@@ -86,9 +88,9 @@
         </div>
 
         <div class="links">
-          <a class="lnk" href="https://github.com/psychopunksage" target="_blank" rel="noopener">[ github ]</a>
+          <a class="lnk" :href="$store.id.GITHUB_URL || '#'" target="_blank" rel="noopener">[ github ]</a>
           <a class="lnk" href="/resume.pdf" target="_blank">[ resume.pdf ]</a>
-          <a class="lnk" href="https://linkedin.com/in/psychopunksage" target="_blank" rel="noopener">[ linkedin ]</a>
+          <a class="lnk" :href="$store.id.LINKEDIN_URL || '#'" target="_blank" rel="noopener">[ linkedin ]</a>
         </div>
       </div>
 
@@ -96,7 +98,6 @@
   </div>
 </div>
 
-<script src="env.js"></script>
 <script src="network.js"></script>
 <script src="chat.js"></script>
 </body>
